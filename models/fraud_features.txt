@@ -1,0 +1,13 @@
+TX_AMOUNT
+hour
+day_of_week
+amount_log
+terminal_transaction_count
+terminal_fraud_count
+terminal_fraud_rate
+terminal_avg_amount
+amount_deviation
+seconds_since_previous
+transactions_last_1h
+transactions_last_24h
+amount_last_1h

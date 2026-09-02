@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MerchantGuard AI</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="header">
+
+        <div>
+            <h1>MerchantGuard AI</h1>
+            <p>AI-Powered Merchant Fraud & Risk Detection</p>
+        </div>
+
+        <div class="status">
+            <span class="status-dot"></span>
+            API ONLINE
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         MAIN CONTAINER
+    ====================================================== -->
+
+    <main class="container">
+
+
+        <!-- =================================================
+             TRANSACTION INPUT
+        ================================================== -->
+
+        <section class="card">
+
+            <h2>Transaction Analysis</h2>
+
+            <p class="description">
+                Enter transaction and merchant behavior details
+                to calculate real-time fraud and risk signals.
+            </p>
+
+
+            <div class="form-grid">
+
+                <div class="input-group">
+                    <label>Transaction Amount</label>
+                    <input
+                        id="transaction_amount"
+                        type="number"
+                        value="947.40"
+                        step="0.01"
+                    >
+                </div>
+
+
+                <div class="input-group">
+                    <label>Hour</label>
+                    <input
+                        id="hour"
+                        type="number"
+                        value="8"
+                        min="0"
+                        max="23"
+                    >
+                </div>
+
+
+                <div class="input-group">
+                    <label>Day of Week</label>
+                    <input
+                        id="day_of_week"
+                        type="number"
+                        value="5"
+                        min="0"
+                        max="6"
+                    >
+                </div>
+
+
+                <div class="input-group">
+                    <label>Terminal Transactions</label>
+                    <input
+                        id="terminal_transaction_count"
+                        type="number"
+                        value="1"
+                    >
+                </div>
+
+
+                <div class="input-group">
+                    <label>Terminal Fraud Count</label>
+                    <input
+                        id="terminal_fraud_count"
+                        type="number"
+                        value="5"
+                    >
+                </div>
+
+
+                <div class="input-group">
+                    <label>Terminal Fraud Rate</label>
+                    <input
+                        id="terminal_fraud_rate"
+                        type="number"
+                        value="0.5"
+                        step="0.01"
+                    >
+                </div>
+
+
+                <div class="input-group">
+                    <label>Terminal Average Amount</label>
+                    <input
+                        id="terminal_avg_amount"
+                        type="number"
+                        value="50"
+                        step="0.01"
+                    >
+                </div>
+
+
+                <div class="input-group">
+                    <label>Seconds Since Previous</label>
+                    <input
+                        id="seconds_since_previous"
+                        type="number"
+                        value="10"
+                    >
+                </div>
+
+
+                <div class="input-group">
+                    <label>Transactions Last 1 Hour</label>
+                    <input
+                        id="transactions_last_1h"
+                        type="number"
+                        value="3"
+                    >
+                </div>
+
+
+                <div class="input-group">
+                    <label>Transactions Last 24 Hours</label>
+                    <input
+                        id="transactions_last_24h"
+                        type="number"
+                        value="8"
+                    >
+                </div>
+
+
+                <div class="input-group">
+                    <label>Amount Last 1 Hour</label>
+                    <input
+                        id="amount_last_1h"
+                        type="number"
+                        value="1500"
+                        step="0.01"
+                    >
+                </div>
+
+            </div>
+
+
+            <button
+                id="predictButton"
+                class="analyze-button"
+            >
+                Analyze Transaction Risk
+            </button>
+
+        </section>
+
+
+
+        <!-- =================================================
+             RESULT PANEL
+        ================================================== -->
+
+        <section
+            id="resultPanel"
+            class="card result-panel"
+        >
+
+            <h2>Risk Assessment</h2>
+
+
+            <div class="risk-grid">
+
+
+                <!-- Fraud Probability -->
+
+                <div class="metric">
+
+                    <span class="metric-label">
+                        Fraud Probability
+                    </span>
+
+                    <strong id="fraudProbability">
+                        --
+                    </strong>
+
+                </div>
+
+
+                <!-- Risk Score -->
+
+                <div class="metric">
+
+                    <span class="metric-label">
+                        Risk Score
+                    </span>
+
+                    <strong id="riskScore">
+                        --
+                    </strong>
+
+                </div>
+
+
+                <!-- Risk Level -->
+
+                <div class="metric">
+
+                    <span class="metric-label">
+                        Risk Level
+                    </span>
+
+                    <strong id="riskLevel">
+                        --
+                    </strong>
+
+                </div>
+
+
+                <!-- Action -->
+
+                <div class="metric">
+
+                    <span class="metric-label">
+                        Recommended Action
+                    </span>
+
+                    <strong id="recommendedAction">
+                        --
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 MODEL SIGNALS
+            ================================================== -->
+
+            <h3>Detection Signals</h3>
+
+            <div class="signals-grid">
+
+                <div>
+                    <span>Fraud Signal</span>
+                    <strong id="fraudSignal">--</strong>
+                </div>
+
+                <div>
+                    <span>Anomaly Signal</span>
+                    <strong id="anomalySignal">--</strong>
+                </div>
+
+                <div>
+                    <span>Behavior Signal</span>
+                    <strong id="behaviorSignal">--</strong>
+                </div>
+
+                <div>
+                    <span>Evidence Strength</span>
+                    <strong id="evidenceStrength">--</strong>
+                </div>
+
+                <div>
+                    <span>Anomaly Detected</span>
+                    <strong id="anomalyDetected">--</strong>
+                </div>
+
+                <div>
+                    <span>Anomaly Score</span>
+                    <strong id="anomalyScore">--</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- =================================================
+     ANALYTICS DASHBOARD
+================================================== -->
+
+<section class="card analytics-card">
+
+    <h2>Merchant Risk Analytics</h2>
+
+    <p class="description">
+        Historical evaluation of MerchantGuard fraud detection
+        and merchant risk signals.
+    </p>
+
+    <div class="analytics-grid">
+
+        <div class="analytics-metric">
+            <span>Total Windows</span>
+            <strong id="totalWindows">--</strong>
+        </div>
+
+        <div class="analytics-metric">
+            <span>Fraud Windows</span>
+            <strong id="fraudWindows">--</strong>
+        </div>
+
+        <div class="analytics-metric">
+            <span>High/Critical Alerts</span>
+            <strong id="highAlerts">--</strong>
+        </div>
+
+        <div class="analytics-metric">
+            <span>Fraud Alerts</span>
+            <strong id="fraudAlerts">--</strong>
+        </div>
+
+        <div class="analytics-metric">
+            <span>Alert Precision</span>
+            <strong id="alertPrecision">--</strong>
+        </div>
+
+        <div class="analytics-metric">
+            <span>Fraud Capture</span>
+            <strong id="fraudCapture">--</strong>
+        </div>
+
+        <div class="analytics-metric">
+            <span>Financial Exposure</span>
+            <strong id="financialExposure">--</strong>
+        </div>
+
+    </div>
+
+
+    <h3>Risk Distribution</h3>
+
+    <div class="risk-bars">
+
+        <div class="risk-bar">
+            <div class="risk-bar-label">
+                <span>LOW</span>
+                <strong id="lowCount">--</strong>
+            </div>
+            <div class="bar">
+                <div id="lowBar" class="bar-fill"></div>
+            </div>
+        </div>
+
+
+        <div class="risk-bar">
+            <div class="risk-bar-label">
+                <span>MEDIUM</span>
+                <strong id="mediumCount">--</strong>
+            </div>
+            <div class="bar">
+                <div id="mediumBar" class="bar-fill"></div>
+            </div>
+        </div>
+
+
+        <div class="risk-bar">
+            <div class="risk-bar-label">
+                <span>HIGH</span>
+                <strong id="highCount">--</strong>
+            </div>
+            <div class="bar">
+                <div id="highBar" class="bar-fill"></div>
+            </div>
+        </div>
+
+
+        <div class="risk-bar">
+            <div class="risk-bar-label">
+                <span>CRITICAL</span>
+                <strong id="criticalCount">--</strong>
+            </div>
+            <div class="bar">
+                <div id="criticalBar" class="bar-fill"></div>
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- =========================================================
+     TOP RISK ALERTS
+========================================================= -->
+
+<section class="card">
+
+    <h2>Top Risk Alerts</h2>
+
+    <p class="section-subtitle">
+        Highest-risk merchant terminal windows identified by MerchantGuard AI
+    </p>
+
+    <div class="alerts-table-wrapper">
+
+        <table class="alerts-table">
+
+            <thead>
+
+                <tr>
+                    <th>Time</th>
+                    <th>Terminal</th>
+                    <th>Risk</th>
+                    <th>Score</th>
+                    <th>Fraud Probability</th>
+                    <th>Amount</th>
+                    <th>Fraud Count</th>
+                    <th>Action</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="alertsTableBody">
+
+                <tr>
+                    <td colspan="8">
+                        Loading alerts...
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+        <!-- =================================================
+             PROJECT INFORMATION
+        ================================================== -->
+
+        <section class="card">
+
+            <h2>MerchantGuard AI Architecture</h2>
+
+            <div class="architecture">
+
+                <div class="architecture-box">
+                    Transaction
+                </div>
+
+                <span>→</span>
+
+                <div class="architecture-box">
+                    Fraud Model
+                </div>
+
+                <span>+</span>
+
+                <div class="architecture-box">
+                    Anomaly Model
+                </div>
+
+                <span>+</span>
+
+                <div class="architecture-box">
+                    Behavioral Analysis
+                </div>
+
+                <span>→</span>
+
+                <div class="architecture-box">
+                    Risk Engine
+                </div>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+    <footer>
+
+        MerchantGuard AI • Fraud Detection & Merchant Risk Analytics
+
+    </footer>
+
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>

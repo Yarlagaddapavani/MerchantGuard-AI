@@ -1,0 +1,54 @@
+Loading datasets...
+Training rows: 191,611
+Validation rows: 48,307
+Test rows: 48,144
+
+Training Random Forest...
+Training complete.
+
+========== VALIDATION ==========
+Threshold: 0.5
+Precision: 0.7887
+Recall:    0.8005
+F1 Score:  0.7946
+PR-AUC:    0.8249
+
+Confusion Matrix:
+[[47820    86]
+ [   80   321]]
+
+========== HELD-OUT TEST ==========
+Threshold: 0.5
+Precision: 0.8667
+Recall:    0.7735
+F1 Score:  0.8174
+PR-AUC:    0.8045
+
+Confusion Matrix:
+[[47655    52]
+ [   99   338]]
+
+========== FEATURE IMPORTANCE ==========
+                   feature   importance
+       terminal_fraud_rate 2.310609e-01
+          amount_deviation 1.670920e-01
+      terminal_fraud_count 1.642317e-01
+                amount_log 1.565380e-01
+                 TX_AMOUNT 1.345378e-01
+    seconds_since_previous 3.608753e-02
+            amount_last_1h 3.409506e-02
+terminal_transaction_count 2.829912e-02
+                      hour 2.240099e-02
+               day_of_week 1.433166e-02
+     transactions_last_24h 9.648457e-03
+      transactions_last_1h 1.676127e-03
+       terminal_avg_amount 5.775345e-07
+
+Model saved to:
+models\random_forest_fraud_model.joblib
+Feature list saved to:
+models\fraud_features.txt
+
+========================================
+FRAUD MODEL COMPLETE
+========================================

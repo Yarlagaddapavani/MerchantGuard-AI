@@ -1,41 +1,47 @@
-MerchantGuard AI
-AI-Powered Merchant Fraud & Risk Detection
+# MerchantGuard AI
+
+## AI-Powered Merchant Fraud & Risk Detection
 
 MerchantGuard AI is a defense-only AI risk management system designed to help merchants identify suspicious transaction behavior and high-risk merchant terminal activity.
 
 It combines:
 
-Supervised fraud detection
-Unsupervised anomaly detection
-Merchant behavioral analysis
-Evidence strength
-A unified risk scoring engine
-Action-oriented risk recommendations
-A FastAPI prediction service
-A web-based merchant risk dashboard
+- Supervised fraud detection
+- Unsupervised anomaly detection
+- Merchant behavioral analysis
+- Evidence strength
+- Unified risk scoring
+- Action-oriented risk recommendations
+- FastAPI prediction service
+- Web-based merchant risk dashboard
 
-The project is built for Razorpay AI Buildathon 2026 — Track 2: AI Risk Manager.
+The project is built for the **Razorpay AI Buildathon 2026 — Track 2: AI Risk Manager**.
 
-Problem
+---
+
+## Problem
 
 Fraud does not always appear as a single obviously fraudulent transaction.
 
 A merchant terminal can gradually exhibit suspicious behavior such as:
 
-Increasing transaction frequency
-Unusual transaction amounts
-Repeated suspicious transactions
-Abnormal activity during unusual hours
-Sudden changes from historical merchant behavior
+- Increasing transaction frequency
+- Unusual transaction amounts
+- Repeated suspicious transactions
+- Abnormal activity during unusual hours
+- Sudden changes from historical merchant behavior
 
 A useful risk system therefore needs to combine multiple signals instead of relying on a single fraud probability.
 
-MerchantGuard AI addresses this by combining transaction-level fraud prediction with terminal-level anomaly and behavioral signals.
+MerchantGuard AI addresses this by combining transaction-level fraud prediction with terminal-level anomaly detection and behavioral risk signals.
 
-Solution
+---
+
+## Solution
 
 MerchantGuard AI analyzes transaction and merchant-terminal behavior through multiple complementary signals.
 
+```text
 Transaction
      │
      ▼
@@ -58,14 +64,17 @@ Fraud Model     Anomaly Model
         Risk Engine
              │
              ▼
-      Risk Score 0–100
+       Risk Score 0–100
              │
        ┌─────┼─────┐
        ▼     ▼     ▼
-      LOW  MEDIUM HIGH/CRITICAL
+      LOW  MEDIUM  HIGH/CRITICAL
              │
              ▼
       Recommended Action
+
+
+
 AI Architecture
 1. Supervised Fraud Detection
 
@@ -86,6 +95,18 @@ Time since previous transaction
 Transactions in the last hour
 Transactions in the last 24 hours
 Amount processed in the last hour
+Held-Out Transaction-Level Results
+
+The Random Forest was evaluated on the chronological held-out test set.
+
+Metric	Result
+Precision	86.67%
+Recall	77.35%
+F1 Score	81.74%
+PR-AUC	80.45%
+
+These are transaction-level model metrics and are distinct from the operational alert metrics produced by the MerchantGuard risk engine.
+
 2. Unsupervised Anomaly Detection
 
 An Isolation Forest identifies unusual terminal-hour behavior.
@@ -108,6 +129,9 @@ Transaction volume deviation
 Amount deviation
 Historical terminal behavior
 Merchant activity evidence
+
+These signals help identify sudden changes from a terminal's normal operating pattern.
+
 4. Risk Engine
 
 The final risk score combines the major signals:
@@ -119,8 +143,7 @@ The final risk score combines the major signals:
 
 The score is then adjusted according to evidence strength and high-value transaction behavior.
 
-Risk levels:
-
+Risk Levels
 Score	Risk Level	Recommended Action
 < 30	LOW	Normal monitoring
 30–59	MEDIUM	Enhanced monitoring
@@ -132,14 +155,17 @@ MerchantGuard uses the simulated payment transaction dataset from the Fraud Dete
 
 The project currently uses a 30-day subset:
 
-Period:       2018-04-01 → 2018-04-30
-Transactions: 288,062
-Fraud:        1,702
-Fraud rate:   0.5908%
-Customers:    4,959
-Terminals:    10,000
+Property	Value
+Period	2018-04-01 → 2018-04-30
+Transactions	288,062
+Fraud transactions	1,702
+Fraud rate	0.5908%
+Customers	4,959
+Terminals	10,000
 
 The data is transformed into terminal-hour behavioral windows for merchant risk evaluation.
+
+The raw and generated datasets are intentionally excluded from the public repository because of their size. They can be regenerated using the project pipeline.
 
 Evaluation Methodology
 
@@ -147,20 +173,19 @@ To avoid leaking future information into model evaluation, the data is split chr
 
 TRAIN
 April 1 – April 20
-
         ↓
-
 VALIDATION
 April 21 – April 25
-
         ↓
-
 HELD-OUT TEST
 April 26 – April 30
 
 The final MerchantGuard evaluation is performed on the held-out test period.
 
-Held-out test results
+Held-Out Test Results
+
+The operational risk engine was evaluated on terminal-hour windows from the held-out test period.
+
 Metric	Result
 Terminal-hour windows	46,907
 Fraud-containing windows	429
@@ -175,9 +200,9 @@ Interpretation
 
 MerchantGuard's HIGH/CRITICAL alert set achieved:
 
-98.52% precision
+98.52% alert precision
 
-meaning that 133 of the 135 HIGH/CRITICAL alert windows contained at least one fraud transaction in the held-out test data.
+This means that 133 of the 135 HIGH/CRITICAL alert windows contained at least one fraud transaction in the held-out test data.
 
 The system captured:
 
@@ -185,18 +210,32 @@ The system captured:
 
 while keeping the number of high-severity alerts relatively small.
 
-The ₹41,848.29 exposure figure is a retrospective evaluation metric calculated from actual fraud labels in the held-out test set, not a live prediction of future losses.
+The ₹41,848.29 exposure figure is a retrospective evaluation metric calculated from actual fraud labels in the held-out test set. It is not a live prediction of future losses.
+
+False-Positive Alert Burden
+
+MerchantGuard AI was evaluated on the held-out test period using HIGH and CRITICAL alerts as the operational intervention threshold.
+
+HIGH + CRITICAL alert windows: 135
+Fraud-containing alert windows: 133
+False-positive alert windows: 2
+False-positive rate among HIGH/CRITICAL alerts: 1.48%
+Alert precision: 98.52%
+
+The monetary cost of false positives is not estimated because no operational cost-per-alert parameter was provided. Instead, the system reports the measurable alert burden directly rather than inventing a financial cost.
+
+This metric complements the transaction-level Random Forest evaluation and provides an operational view of how selectively the risk engine raises high-severity alerts.
 
 Live Prediction API
 
 MerchantGuard exposes a FastAPI service.
 
-Health
+Health Check
 GET /health
-Transaction prediction
+Transaction Prediction
 POST /predict
 
-Example:
+Example request:
 
 {
   "transaction_amount": 500,
@@ -221,7 +260,7 @@ Risk score
 Risk level
 Recommended action
 Individual risk signals
-Historical analytics
+Historical Analytics
 GET /analytics
 
 Provides:
@@ -231,10 +270,10 @@ Fraud windows
 HIGH/CRITICAL alerts
 Fraud-containing alerts
 Alert precision
-Fraud capture
+Fraud-window capture
 Retrospective exposure
 Risk distribution
-Top risk alerts
+Top Risk Alerts
 GET /alerts
 
 Returns the highest-risk HIGH and CRITICAL terminal-hour windows.
@@ -242,8 +281,6 @@ Returns the highest-risk HIGH and CRITICAL terminal-hour windows.
 Dashboard
 
 MerchantGuard includes a browser-based risk dashboard.
-
-The dashboard provides:
 
 Transaction Analysis
 
@@ -276,7 +313,7 @@ Fraud windows
 HIGH/CRITICAL alerts
 Fraud alerts
 Alert precision
-Fraud capture
+Fraud-window capture
 Retrospective financial exposure
 Risk distribution
 Top Risk Alerts
@@ -322,7 +359,7 @@ Frontend
 HTML
 CSS
 JavaScript
-Live Server
+VS Code Live Server
 Data
 Fraud Detection Handbook simulated transaction dataset
 Project Structure
@@ -333,14 +370,14 @@ MerchantGuard-AI/
 │   ├── style.css
 │   └── app.js
 │
-├── data/
-│   └── processed/
-│
 ├── models/
 │   ├── random_forest_fraud_model.joblib
 │   ├── isolation_forest_model.joblib
 │   ├── anomaly_scaler.joblib
 │   └── fraud_features.txt
+│
+├── reports/
+│   └── fraud_model_results.txt
 │
 ├── src/
 │   ├── prepare_dataset.py
@@ -354,20 +391,39 @@ MerchantGuard-AI/
 │   ├── evaluate_merchantguard.py
 │   └── api.py
 │
-└── README.md
+├── .gitignore
+├── README.MD
+└── requirements.txt
+
+The data/ directory is excluded from the public repository because it contains large raw and generated datasets.
+
 Running the Project
 1. Create and activate virtual environment
-
-Windows:
-
+Windows
 python -m venv venv
-
-Git Bash:
-
+Git Bash
 source venv/Scripts/activate
 2. Install dependencies
 pip install -r requirements.txt
-3. Start FastAPI
+3. Generate the dataset and features
+
+After obtaining the Fraud Detection Handbook simulated dataset, run the project pipeline:
+
+python src/prepare_dataset.py
+python src/features.py
+python src/validate_features.py
+python src/split_data.py
+4. Train the fraud model
+python src/fraud_model.py
+5. Train the anomaly model
+python src/merchant_anomaly.py
+6. Build merchant behavioral baselines
+python src/merchant_baseline.py
+7. Run the MerchantGuard risk engine
+python src/merchantguard_engine.py
+8. Evaluate the system
+python src/evaluate_merchantguard.py
+9. Start FastAPI
 uvicorn src.api:app --reload
 
 API:
@@ -377,9 +433,9 @@ http://127.0.0.1:8000
 Swagger documentation:
 
 http://127.0.0.1:8000/docs
-4. Start the dashboard
+10. Start the dashboard
 
-Open the dashboard folder with VS Code Live Server.
+Open the dashboard folder using VS Code Live Server.
 
 Dashboard:
 
@@ -422,14 +478,14 @@ The implementation emphasizes:
 
 A working AI detector
 Held-out evaluation
-Measured precision and recall/capture
+Measured transaction-level precision and recall
+Operational alert precision and fraud-window capture
 Honest reporting of evaluation metrics
+Explicit false-positive alert burden
 Defensive risk intervention
 An operational dashboard
 
-Razorpay's stated Track 2 bar specifically calls for measured performance on held-out data and honest metrics, including false-positive cost.
-
-
+The system separates transaction-level model metrics from operational risk-engine metrics to avoid presenting fraud-window capture as model recall.
 
 
 Author:
